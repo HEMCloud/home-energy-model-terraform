@@ -18,4 +18,9 @@ terraform {
 
 provider "aws" {
   region = "eu-west-2"
+
+  assume_role {
+    # Dev account
+    role_arn = "arn:aws:iam::864981718509:role/OrganizationAccountAccessRole"
+  }
 }
