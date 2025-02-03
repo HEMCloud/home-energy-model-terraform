@@ -14,6 +14,6 @@ provider "aws" {
 
   assume_role {
     # Mgt/root account
-    role_arn = "arn:aws:iam::317467111462:role/TerraformAdmin"
+    role_arn = "arn:aws:iam::${var.mgt_account_id}:role/"
   }
 }

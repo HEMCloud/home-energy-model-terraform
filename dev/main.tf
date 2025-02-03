@@ -21,6 +21,6 @@ provider "aws" {
 
   assume_role {
     # Dev account
-    role_arn = "arn:aws:iam::864981718509:role/OrganizationAccountAccessRole"
+    role_arn = "arn:aws:iam::${var.dev_account_id}:role/OrganizationAccountAccessRole"
   }
 }
