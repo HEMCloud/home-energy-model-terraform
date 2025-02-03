@@ -7,13 +7,16 @@ terraform {
       name = "mgt"
     }
   }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">=5.84.0"
+    }
+  }
 }
 
 provider "aws" {
   region = "eu-west-2"
-
-  assume_role {
-    # Mgt/root account
-    role_arn = "arn:aws:iam::${var.mgt_account_id}:role/"
-  }
+  # MGT does not need to assume a role, as it's already running as admin
 }
