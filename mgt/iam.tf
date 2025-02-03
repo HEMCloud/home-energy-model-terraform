@@ -23,7 +23,7 @@ resource "aws_iam_role" "terraform_assume_dev_admin" {
 }
 
 resource "aws_iam_policy" "allow_terraform_to_assume_dev_admin" {
-  description = "Used to allow Terraform to assume the OrganizationAccountAccessRole in the dev member account."
+  description = "Permission to assume the OrganizationAccountAccessRole in the dev member account."
   name        = "AllowTerraformToAssumeDevAccountAdmin"
   policy = jsonencode({
     Statement = [{
@@ -34,4 +34,9 @@ resource "aws_iam_policy" "allow_terraform_to_assume_dev_admin" {
     }]
     Version = "2012-10-17"
   })
+}
+
+resource "aws_iam_role_policy_attachment" "allow_terraform_to_assume_dev_admin" {
+  policy_arn = aws_iam_policy.allow_terraform_to_assume_dev_admin.arn
+  role       = aws_iam_role.terraform_assume_dev_admin.name
 }
