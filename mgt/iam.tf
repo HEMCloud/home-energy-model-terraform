@@ -32,15 +32,16 @@ data "aws_iam_policy_document" "assume_member_admin_trust_policy" {
 resource "aws_iam_policy" "allow_terraform_to_assume_dev_admin" {
   description = "Permission to assume the OrganizationAccountAccessRole in the dev member account."
   name        = "AllowTerraformToAssumeDevAccountAdmin"
-  policy = jsonencode({
-    Statement = [{
-      Action   = "sts:AssumeRole"
-      Effect   = "Allow"
-      Resource = "arn:aws:iam::864981718509:role/OrganizationAccountAccessRole"
-      Sid      = "VisualEditor0"
-    }]
-    Version = "2012-10-17"
-  })
+  policy = data.aws_iam_policy_document.allow_terraform_to_assume_dev_admin.json
+}
+
+data "aws_iam_policy_document" "allow_terraform_to_assume_dev_admin" {
+  statement {
+    sid = "AllowTerraformToAssumeAccountAdmin"
+    effect = "Allow"
+    resources = ["arn:aws:iam::864981718509:role/OrganizationAccountAccessRole"]
+    actions = ["sts:AssumeRole"]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "allow_terraform_to_assume_dev_admin" {
