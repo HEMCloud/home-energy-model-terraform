@@ -7,7 +7,7 @@ resource "aws_iam_role" "terraform_assume_dev_admin" {
           "app.terraform.io:aud" = "aws.workload.identity"
         }
         StringLike = {
-          "app.terraform.io:sub" = "organization:*:project:*:workspace:*:run_phase:*"
+          "app.terraform.io:sub" = "organization:hem-cloud:project:Home-Energy-Model-Cloud:workspace:dev:run_phase:*"
         }
       }
       Effect = "Allow"

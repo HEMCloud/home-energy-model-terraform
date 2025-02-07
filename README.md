@@ -40,7 +40,7 @@ There are a series of manual and Terraform controlled changes to setup the AWS a
                     "app.terraform.io:aud": "aws.workload.identity"
                 },
                 "StringLike": {
-                    "app.terraform.io:sub": "organization:<HCP_ORG_NAME_HERE>:project:*:workspace:*:run_phase:*"
+                    "app.terraform.io:sub": "organization:<HCP_ORG_NAME_HERE>:project:<HCP_PROJECT_NAME_HERE>:workspace:<MANAGEMENT_WORKSPACE_NAME_HERE>:run_phase:*"
                 }
             }
         }
