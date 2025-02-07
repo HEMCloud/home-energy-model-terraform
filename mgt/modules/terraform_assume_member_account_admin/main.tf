@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "assume_member_admin_trust_policy" {
     condition {
       test     = "StringLike"
       variable = "app.terraform.io:sub"
-      values   = ["organization:hem-cloud:project:Home-Energy-Model-Cloud:workspace:dev:run_phase:*"]
+      values   = ["organization:${var.hcp_organization}:project:${var.hcp_project}:workspace:${var.hcp_workspace}:run_phase:*"]
     }
     principals {
       type        = "Federated"
