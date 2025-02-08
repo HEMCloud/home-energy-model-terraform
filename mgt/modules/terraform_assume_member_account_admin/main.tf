@@ -2,7 +2,7 @@ resource "aws_iam_role" "terraform_assume_member_admin" {
   assume_role_policy   = data.aws_iam_policy_document.trust_terraform_to_assume_role.json
   description          = "Role used by Terraform to assume OrganizationAccountAccessRole in the ${var.hcp_workspace} member account"
   max_session_duration = 3600
-  name                 = "TerraformAssume${var.hcp_workspace}Admin"
+  name                 = "TerraformAssume${local.capitalised_hcp_workspace}Admin"
 }
 
 resource "aws_iam_role_policy_attachment" "allow_assume_member_admin" {
