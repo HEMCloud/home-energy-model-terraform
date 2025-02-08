@@ -1,11 +1,11 @@
-resource "aws_iam_role" "terraform_assume_dev_admin" {
-  assume_role_policy   = data.aws_iam_policy_document.assume_member_admin_trust_policy.json
+resource "aws_iam_role" "terraform_assume_member_admin" {
+  assume_role_policy   = data.aws_iam_policy_document.trust_terraform_to_assume_role.json
   description          = "Role used by Terraform to assume OrganizationAccountAccessRole in the dev member account"
   max_session_duration = 3600
   name                 = "TerraformAssumeDevAdmin"
 }
 
-data "aws_iam_policy_document" "assume_member_admin_trust_policy" {
+data "aws_iam_policy_document" "trust_terraform_to_assume_role" {
   statement {
     sid     = "AllowTerraformToAssumeMemberAccountAdmin"
     effect  = "Allow"
@@ -29,13 +29,13 @@ data "aws_iam_policy_document" "assume_member_admin_trust_policy" {
   }
 }
 
-resource "aws_iam_policy" "allow_terraform_to_assume_dev_admin" {
+resource "aws_iam_policy" "allow_assume_member_admin" {
   description = "Permission to assume the OrganizationAccountAccessRole in the dev member account."
   name        = "AllowTerraformToAssumeDevAccountAdmin"
-  policy = data.aws_iam_policy_document.allow_terraform_to_assume_dev_admin.json
+  policy = data.aws_iam_policy_document.allow_assume_member_admin.json
 }
 
-data "aws_iam_policy_document" "allow_terraform_to_assume_dev_admin" {
+data "aws_iam_policy_document" "allow_assume_member_admin" {
   statement {
     sid = "AllowTerraformToAssumeAccountAdmin"
     effect = "Allow"
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "allow_terraform_to_assume_dev_admin" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "allow_terraform_to_assume_dev_admin" {
-  policy_arn = aws_iam_policy.allow_terraform_to_assume_dev_admin.arn
-  role       = aws_iam_role.terraform_assume_dev_admin.name
+resource "aws_iam_role_policy_attachment" "allow_assume_member_admin" {
+  policy_arn = aws_iam_policy.allow_assume_member_admin.arn
+  role       = aws_iam_role.terraform_assume_member_admin.name
 }
