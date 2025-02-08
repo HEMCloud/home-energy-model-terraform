@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "trust_terraform_to_assume_role" {
     }
     principals {
       type        = "Federated"
-      identifiers = ["arn:aws:iam::${var.management_account_id}:oidc-provider/app.terraform.io"]
+      identifiers = ["arn:aws:iam::${var.mgt_account_id}:oidc-provider/app.terraform.io"]
     }
   }
 }
