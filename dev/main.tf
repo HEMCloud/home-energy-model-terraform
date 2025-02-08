@@ -20,7 +20,6 @@ provider "aws" {
   region = "eu-west-2"
 
   assume_role {
-    # Dev account
     role_arn = "arn:aws:iam::${var.dev_account_id}:role/OrganizationAccountAccessRole"
   }
 }
