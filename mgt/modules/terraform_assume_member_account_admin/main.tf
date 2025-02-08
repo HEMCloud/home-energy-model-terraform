@@ -1,8 +1,13 @@
 resource "aws_iam_role" "terraform_assume_member_admin" {
   assume_role_policy   = data.aws_iam_policy_document.trust_terraform_to_assume_role.json
-  description          = "Role used by Terraform to assume OrganizationAccountAccessRole in the dev member account"
+  description          = "Role used by Terraform to assume OrganizationAccountAccessRole in the ${var.hcp_workspace} member account"
   max_session_duration = 3600
   name                 = "TerraformAssume${var.hcp_workspace}Admin"
+}
+
+resource "aws_iam_role_policy_attachment" "allow_assume_member_admin" {
+  policy_arn = aws_iam_policy.allow_assume_member_admin.arn
+  role       = aws_iam_role.terraform_assume_member_admin.name
 }
 
 data "aws_iam_policy_document" "trust_terraform_to_assume_role" {
@@ -24,7 +29,7 @@ data "aws_iam_policy_document" "trust_terraform_to_assume_role" {
     }
     principals {
       type        = "Federated"
-      identifiers = ["arn:aws:iam::317467111462:oidc-provider/app.terraform.io"]
+      identifiers = ["arn:aws:iam::${var.management_account_id}:oidc-provider/app.terraform.io"]
     }
   }
 }
@@ -32,19 +37,14 @@ data "aws_iam_policy_document" "trust_terraform_to_assume_role" {
 resource "aws_iam_policy" "allow_assume_member_admin" {
   description = "Permission to assume the OrganizationAccountAccessRole in the ${var.hcp_workspace} member account."
   name        = "AllowTerraformToAssume${local.capitalised_hcp_workspace}AccountAdmin"
-  policy = data.aws_iam_policy_document.allow_assume_member_admin.json
+  policy      = data.aws_iam_policy_document.allow_assume_member_admin.json
 }
 
 data "aws_iam_policy_document" "allow_assume_member_admin" {
   statement {
-    sid = "AllowTerraformToAssume${local.capitalised_hcp_workspace}AccountAdmin"
-    effect = "Allow"
-    resources = ["arn:aws:iam::864981718509:role/OrganizationAccountAccessRole"]
-    actions = ["sts:AssumeRole"]
+    sid       = "AllowTerraformToAssume${local.capitalised_hcp_workspace}AccountAdmin"
+    effect    = "Allow"
+    resources = ["arn:aws:iam::${var.member_account_id}:role/OrganizationAccountAccessRole"]
+    actions   = ["sts:AssumeRole"]
   }
-}
-
-resource "aws_iam_role_policy_attachment" "allow_assume_member_admin" {
-  policy_arn = aws_iam_policy.allow_assume_member_admin.arn
-  role       = aws_iam_role.terraform_assume_member_admin.name
 }
