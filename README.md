@@ -24,7 +24,7 @@ There are a series of manual and Terraform controlled changes to setup the AWS a
 ## AWS Management Process
 1. Create a new identity provider in IAM for the HCP Terraform application, with a Provider URL of
    `https://app.terraform.io` and an Audience of `aws.workload.identity`.
-2. Add a new role for Terraform to assume in IAM. Note the ARN, as it's needed for the HCP Terraform steps below. It should have an `AdministratorAccess` policy and the following trust policy:
+2. Add a new role for the MGT Terraform workspace to assume in IAM. Note the ARN, as it's needed for the HCP Terraform steps below. It should have an `AdministratorAccess` policy and the following trust policy:
    ```
    {
     "Version": "2012-10-17",
@@ -61,24 +61,24 @@ For each AWS Account including 'MGT':
 4. In the Workspace to be controlled add two new variables:
    1. `TFC_AWS_PROVIDER_AUTH` = `true`, category env.
    2. `TFC_AWS_RUN_ROLE_ARN` = `<ROLE_ARN>`, category env.
-      - If 'MGT', use the role created manually in the MGT account.
-      - If not, use the `TerraformAssume<ENV>Admin` created by Terraform in the MGT account. This is the role used to
-        get an auth token from, while the role configured in each environment's `main.tf` provider block is the
-        environment role used to make configuration changes in that account.
+      - If 'MGT', use the role created manually above in the MGT account.
+      - If not, use the `TerraformAssume<ENV>Admin` created by the Terraform module in this repo. This is the role used to
+        get an auth token from, while the `OrganizationAccountAccessRole` role configured in each environment's
+        `main.tf` provider block is the role used to make configuration changes in that account.
 
 ## Terraform CLI access
 Authentication with HCP Terraform (Cloud) from the CLI has been configured using an API token, generated in their UI and saved in
 `.terraformrc` in my home directory. This allows plan and apply runs to be triggered from the terminal.
 
 ## Run Terraform from this repo
-1. Add a new Terraform IAM AssumeEnvAdmin role module instantiation, passing the newly created account's ID.
+1. Add a new Terraform IAM AssumeEnvAdmin role module instantiation, passing the variables needed.
 2. Terraform apply the 'MGT' workspace to apply the new IAM role and policy created.
 3. Add a new subdirectory to this repo.
 4. Add a `main.tf` with a `cloud` block targeting the workspace name created above.
 5. Add a `provider "aws"` block with an `assume_role` attribute. This should be the ARN of the default
-   OrganizationAccountAccessRole created when the member account was added. Note, the `TFC_AWS_RUN_ROLE_ARN` is the MGT
-   account role used to authenticate, while this `assume_role` is the admin role in the member account used to make
-   infrastructure changes.
+   OrganizationAccountAccessRole created when the member account was added. Note, the `TFC_AWS_RUN_ROLE_ARN` is the
+   `TerraformAssume<ENV>Admin` role used to authenticate in MGT, while this `assume_role` is the
+   `OrganizationAccountAccessRole` role in the member account used to make infrastructure changes.
 6. Run `terraform init`.
 
 ## References
