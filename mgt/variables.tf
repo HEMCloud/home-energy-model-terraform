@@ -9,9 +9,3 @@ variable "mgt_account_id" {
   type        = string
   default     = "317467111462"
 }
-
-variable "assume_role_name" {
-  description = "The name of the role to assume"
-  type        = string
-  default     = "TerraformAdmin"
-}
