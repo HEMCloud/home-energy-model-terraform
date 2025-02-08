@@ -18,6 +18,10 @@ management account to assume the role.
 Dev is used for testing new changes. It's registered with my default email address and 'plus address' suffix of
 '+hem_aws_dev'.
 
+## Production (PRD)
+Prd is used for production workloads. It's registered with my default email address and 'plus address' suffix of
+'+hem_aws_prd'.
+
 # Initial Terraform Setup guide
 There are a series of manual and Terraform controlled changes to setup the AWS accounts.
 
