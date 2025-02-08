@@ -2,12 +2,12 @@ resource "aws_iam_role" "terraform_assume_member_admin" {
   assume_role_policy   = data.aws_iam_policy_document.trust_terraform_to_assume_role.json
   description          = "Role used by Terraform to assume OrganizationAccountAccessRole in the dev member account"
   max_session_duration = 3600
-  name                 = "TerraformAssumeDevAdmin"
+  name                 = "TerraformAssume${var.hcp_workspace}Admin"
 }
 
 data "aws_iam_policy_document" "trust_terraform_to_assume_role" {
   statement {
-    sid     = "AllowTerraformToAssumeMemberAccountAdmin"
+    sid     = "Allow${local.capitalised_hcp_workspace}TerraformWorkspaceToAssumeRole"
     effect  = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
 
@@ -30,14 +30,14 @@ data "aws_iam_policy_document" "trust_terraform_to_assume_role" {
 }
 
 resource "aws_iam_policy" "allow_assume_member_admin" {
-  description = "Permission to assume the OrganizationAccountAccessRole in the dev member account."
-  name        = "AllowTerraformToAssumeDevAccountAdmin"
+  description = "Permission to assume the OrganizationAccountAccessRole in the ${var.hcp_workspace} member account."
+  name        = "AllowTerraformToAssume${local.capitalised_hcp_workspace}AccountAdmin"
   policy = data.aws_iam_policy_document.allow_assume_member_admin.json
 }
 
 data "aws_iam_policy_document" "allow_assume_member_admin" {
   statement {
-    sid = "AllowTerraformToAssumeAccountAdmin"
+    sid = "AllowTerraformToAssume${local.capitalised_hcp_workspace}AccountAdmin"
     effect = "Allow"
     resources = ["arn:aws:iam::864981718509:role/OrganizationAccountAccessRole"]
     actions = ["sts:AssumeRole"]
