@@ -22,6 +22,17 @@ Dev is used for testing new changes. It's registered with my default email addre
 Prd is used for production workloads. It's registered with my default email address and 'plus address' suffix of
 '+hem_aws_prd'.
 
+## Accessing the console for each member account
+There are two ways to access the console for each member account. The first is to use the root user login. The second
+is to use an IAM user that has admin access. I took the following steps to create an IAM user able to access each
+account:
+
+1. In MGT, as the root user, in eu-west-2, navigate to IAM Identity Center.
+2. There should be a pre-created AWS Organisations identity instance (`ssoins-753566dc2d0ed9ff`).
+3. Under Users, add a new user.
+4. Under Multi-account permissions, select AWS accounts.
+5. Tick one or more accounts to grant access to, then assign the created user.
+
 # Initial Terraform Setup guide
 There are a series of manual and Terraform controlled changes to setup the AWS accounts.
 
