@@ -15,3 +15,9 @@ variable "mgt_account_id" {
   type        = string
   default     = "317467111462"
 }
+
+variable "region" {
+  description = "The AWS region"
+  type        = string
+  default     = "eu-west-2"
+}
