@@ -32,6 +32,12 @@ account:
 3. Under Users, add a new user.
 4. Under Multi-account permissions, select AWS accounts.
 5. Tick one or more accounts to grant access to, then assign the created user.
+6. Locally, in the AWS credential config file, add the SSO session with the access portal URL found in IAM Identity
+   Center Dashboard. Use a scope of `sso:account:access`.
+7. Add a profile to the config with the `sso_session` from the previous step and `sso_account_id` of the account to
+   access.
+8. Run `aws sso login --profile <PROFILE_NAME>` to get a session token.
+9. Go to the access portal URL to login to the console.
 
 # Initial Terraform Setup guide
 There are a series of manual and Terraform controlled changes to setup the AWS accounts.
