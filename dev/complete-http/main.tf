@@ -272,6 +272,7 @@ module "lambda_function" {
 
   cloudwatch_logs_retention_in_days = 7
 
+  # Some problems with this, when publish=false, see https://github.com/terraform-aws-modules/terraform-aws-lambda/issues/36
   allowed_triggers = {
     AllowExecutionFromAPIGateway = {
       service    = "apigateway"
