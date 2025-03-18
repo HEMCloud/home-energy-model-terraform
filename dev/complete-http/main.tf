@@ -15,15 +15,13 @@ data "aws_s3_object" "openapi_spec" {
 
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
+  depends_on = [ data.aws_s3_object.openapi_spec ]
 
   # If using yaml, must be uploaded as Content-Type plain/text for the body attribute to be available.
-  # body = templatestring(data.aws_s3_object.openapi_spec.body, {
-  #   example_function_arn = module.lambda_function.lambda_function_arn
-  # })
+  body = templatestring(data.aws_s3_object.openapi_spec.body, {
+    hem-api-lambda-arn = module.lambda_function.lambda_function_arn
+  })
 
-  body = data.aws_s3_object.openapi_spec.body
-
-  depends_on = [ data.aws_s3_object.openapi_spec ]
 
   cors_configuration = {
     allow_headers = ["content-type", "x-amz-date", "authorization", "x-api-key", "x-amz-security-token", "x-amz-user-agent"]
@@ -36,17 +34,17 @@ module "api_gateway" {
   name             = var.name
 
   # Authorizer(s)
-  authorizers = {
-    cognito = {
-      authorizer_type  = "JWT"
-      identity_sources = ["$request.header.Authorization"]
-      name             = "cognito"
-      jwt_configuration = {
-        audience = ["d6a38afd-45d6-4874-d1aa-3c5c558aqcc2"]
-        issuer   = "https://${aws_cognito_user_pool.this.endpoint}"
-      }
-    }
-  }
+  # authorizers = {
+  #   cognito = {
+  #     authorizer_type  = "JWT"
+  #     identity_sources = ["$request.header.Authorization"]
+  #     name             = "cognito"
+  #     jwt_configuration = {
+  #       audience = ["d6a38afd-45d6-4874-d1aa-3c5c558aqcc2"]
+  #       issuer   = "https://${aws_cognito_user_pool.this.endpoint}"
+  #     }
+  #   }
+  # }
 
   # Domain Name
   # domain_name           = var.domain_name
@@ -60,76 +58,76 @@ module "api_gateway" {
   # }
 
   # Routes & Integration(s)
-  routes = {
-    "ANY /" = {
-      detailed_metrics_enabled = false
+  # routes = {
+  #   "ANY /" = {
+  #     detailed_metrics_enabled = false
 
-      integration = {
-        uri                    = module.lambda_function.lambda_function_arn
-        payload_format_version = "2.0"
-        timeout_milliseconds   = 12000
-      }
-    }
+  #     integration = {
+  #       uri                    = module.lambda_function.lambda_function_arn
+  #       payload_format_version = "2.0"
+  #       timeout_milliseconds   = 12000
+  #     }
+  #   }
 
-    "GET /some-route" = {
-      authorization_type       = "JWT"
-      authorizer_id            = aws_apigatewayv2_authorizer.external.id
-      throttling_rate_limit    = 80
-      throttling_burst_limit   = 40
-      detailed_metrics_enabled = true
+  #   "GET /some-route" = {
+  #     authorization_type       = "JWT"
+  #     authorizer_id            = aws_apigatewayv2_authorizer.external.id
+  #     throttling_rate_limit    = 80
+  #     throttling_burst_limit   = 40
+  #     detailed_metrics_enabled = true
 
-      integration = {
-        uri                    = module.lambda_function.lambda_function_arn
-        payload_format_version = "2.0"
-      }
-    }
+  #     integration = {
+  #       uri                    = module.lambda_function.lambda_function_arn
+  #       payload_format_version = "2.0"
+  #     }
+  #   }
 
-    "GET /some-route-with-authorizer" = {
-      authorization_type = "JWT"
-      authorizer_key     = "cognito"
+  #   "GET /some-route-with-authorizer" = {
+  #     authorization_type = "JWT"
+  #     authorizer_key     = "cognito"
 
-      integration = {
-        uri                    = module.lambda_function.lambda_function_arn
-        payload_format_version = "2.0"
-      }
-    }
+  #     integration = {
+  #       uri                    = module.lambda_function.lambda_function_arn
+  #       payload_format_version = "2.0"
+  #     }
+  #   }
 
-    "GET /some-route-with-authorizer-and-scope" = {
-      authorization_type   = "JWT"
-      authorizer_key       = "cognito"
-      authorization_scopes = ["user.id", "user.email"]
+  #   "GET /some-route-with-authorizer-and-scope" = {
+  #     authorization_type   = "JWT"
+  #     authorizer_key       = "cognito"
+  #     authorization_scopes = ["user.id", "user.email"]
 
-      integration = {
-        uri                    = module.lambda_function.lambda_function_arn
-        payload_format_version = "2.0"
-      }
-    }
+  #     integration = {
+  #       uri                    = module.lambda_function.lambda_function_arn
+  #       payload_format_version = "2.0"
+  #     }
+  #   }
 
-    "$default" = {
-      integration = {
-        uri = module.lambda_function.lambda_function_arn
-        # tls_config = {
-        #   server_name_to_verify = var.domain_name
-        # }
+  #   "$default" = {
+  #     integration = {
+  #       uri = module.lambda_function.lambda_function_arn
+  #       # tls_config = {
+  #       #   server_name_to_verify = var.domain_name
+  #       # }
 
-        response_parameters = [
-          {
-            status_code = 500
-            mappings = {
-              "append:header.header1" = "$context.requestId"
-              "overwrite:statuscode"  = "403"
-            }
-          },
-          {
-            status_code = 404
-            mappings = {
-              "append:header.error" = "$stageVariables.environmentId"
-            }
-          }
-        ]
-      }
-    }
-  }
+  #       response_parameters = [
+  #         {
+  #           status_code = 500
+  #           mappings = {
+  #             "append:header.header1" = "$context.requestId"
+  #             "overwrite:statuscode"  = "403"
+  #           }
+  #         },
+  #         {
+  #           status_code = 404
+  #           mappings = {
+  #             "append:header.error" = "$stageVariables.environmentId"
+  #           }
+  #         }
+  #       ]
+  #     }
+  #   }
+  # }
 
   # Stage
   stage_access_log_settings = {
@@ -174,22 +172,22 @@ module "api_gateway" {
 # Supporting Resources
 ################################################################################
 
-resource "aws_apigatewayv2_authorizer" "external" {
-  api_id           = module.api_gateway.api_id
-  authorizer_type  = "JWT"
-  identity_sources = ["$request.header.Authorization"]
-  name             = var.name
+# resource "aws_apigatewayv2_authorizer" "external" {
+#   api_id           = module.api_gateway.api_id
+#   authorizer_type  = "JWT"
+#   identity_sources = ["$request.header.Authorization"]
+#   name             = var.name
 
-  jwt_configuration {
-    audience = ["example"]
-    issuer   = "https://${aws_cognito_user_pool.this.endpoint}"
-  }
-}
+#   jwt_configuration {
+#     audience = ["example"]
+#     issuer   = "https://${aws_cognito_user_pool.this.endpoint}"
+#   }
+# }
 
-resource "aws_cognito_user_pool" "this" {
-  name = var.name
-  tags = local.tags
-}
+# resource "aws_cognito_user_pool" "this" {
+#   name = var.name
+#   tags = local.tags
+# }
 
 module "lambda_function" {
   source         = "terraform-aws-modules/lambda/aws"
