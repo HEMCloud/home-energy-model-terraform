@@ -20,3 +20,13 @@ variable "name" {
   description = "Name of the API Gateway"
   type        = string
 }
+
+variable "build_artifacts_bucket_name" {
+  description = "Name of the S3 bucket where build artifacts are stored"
+  type        = string
+}
+
+variable "openapi_spec_object_key" {
+  description = "Key of the OpenAPI Specification YAML file in the S3 bucket"
+  type        = string
+}

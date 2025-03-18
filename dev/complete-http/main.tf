@@ -6,15 +6,16 @@ locals {
   }
 }
 
-################################################################################
-# API Gateway Module
-################################################################################
+data "aws_s3_object" "openapi_spec" {
+  bucket = var.build_artifacts_bucket_name
+  key    = var.openapi_spec_object_key
+}
+
 
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
 
-  # API
-  body = templatefile(var.openapi_spec_yaml_path, {
+  body = templatestring(data.aws_s3_object.openapi_spec.body, {
     example_function_arn = module.lambda_function.lambda_function_arn
   })
 
@@ -97,26 +98,6 @@ module "api_gateway" {
         payload_format_version = "2.0"
       }
     }
-
-    # "POST /start-step-function" = {
-    #   integration = {
-    #     type            = "AWS_PROXY"
-    #     subtype         = "StepFunctions-StartExecution"
-    #     credentials_arn = module.step_function.role_arn
-
-    #     # Note: jsonencode is used to pass argument as a string
-    #     request_parameters = {
-    #       StateMachineArn = module.step_function.state_machine_arn
-    #       Input = jsonencode({
-    #         "key1" : "value1",
-    #         "key2" : "value2"
-    #       })
-    #     }
-
-    #     payload_format_version = "1.0"
-    #     timeout_milliseconds   = 12000
-    #   }
-    # }
 
     "$default" = {
       integration = {
@@ -202,60 +183,6 @@ resource "aws_apigatewayv2_authorizer" "external" {
 resource "aws_cognito_user_pool" "this" {
   name = var.name
   tags = local.tags
-}
-
-# module "step_function" {
-#   source  = "terraform-aws-modules/step-functions/aws"
-#   version = "~> 4.0"
-
-#   name      = var.name
-#   role_name = "${var.name}-step-function"
-#   trusted_entities = [
-#     "apigateway.amazonaws.com",
-#   ]
-
-#   attach_policies_for_integrations = true
-#   service_integrations = {
-#     stepfunction = {
-#       stepfunction = ["*"]
-#     }
-#   }
-
-#   definition = <<-EOT
-#     {
-#       "Comment": "A Hello World example of the Amazon States Language using Pass states",
-#       "StartAt": "Hello",
-#       "States": {
-#         "Hello": {
-#           "Type": "Pass",
-#           "Result": "Hello",
-#           "Next": "World"
-#         },
-#         "World": {
-#           "Type": "Pass",
-#           "Result": "World",
-#           "End": true
-#         }
-#       }
-#     }
-#   EOT
-
-#   tags = local.tags
-# }
-
-locals {
-  package_url = "https://raw.githubusercontent.com/terraform-aws-modules/terraform-aws-lambda/master/examples/fixtures/python-function.zip"
-  downloaded  = "downloaded_package_${md5(local.package_url)}.zip"
-}
-
-resource "null_resource" "download_package" {
-  triggers = {
-    downloaded = local.downloaded
-  }
-
-  provisioner "local-exec" {
-    command = "curl -L -o ${local.downloaded} ${local.package_url}"
-  }
 }
 
 module "lambda_function" {
