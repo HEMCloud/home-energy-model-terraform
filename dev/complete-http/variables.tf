@@ -27,6 +27,10 @@ variable "build_artifacts_bucket_name" {
 }
 
 variable "openapi_spec_object_key" {
-  description = "Key of the OpenAPI Specification YAML file in the S3 bucket. The file must be uploaded with System defined metadata Content-Type of text/plain."
+  description = <<-EOF
+    Key of the OpenAPI Specification YAML file in the S3 bucket. 
+    If file is yaml format, it must be uploaded with System defined metadata 
+    Content-Type of text/plain.
+  EOF
   type        = string
 }
