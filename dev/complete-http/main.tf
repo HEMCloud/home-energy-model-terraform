@@ -1,7 +1,6 @@
 locals {
-  name   = "ex-${basename(path.cwd)}"
   tags = {
-    Example    = local.name
+    Example    = var.name
     GithubRepo = "terraform-aws-apigateway-v2"
     GithubOrg  = "terraform-aws-modules"
   }
@@ -25,9 +24,9 @@ module "api_gateway" {
     allow_origins = ["*"]
   }
 
-  description      = "My awesome HTTP API Gateway"
+  description      = var.description
   fail_on_warnings = false
-  name             = local.name
+  name             = var.name
 
   # Authorizer(s)
   authorizers = {
@@ -46,7 +45,7 @@ module "api_gateway" {
   # domain_name           = var.domain_name
   create_domain_records = false
   create_certificate    = false
-  create_domain_name = false
+  create_domain_name    = false
 
   # mutual_tls_authentication = {
   #   truststore_uri     = "s3://${module.s3_bucket.s3_bucket_id}/${aws_s3_object.this.id}"
@@ -192,7 +191,7 @@ resource "aws_apigatewayv2_authorizer" "external" {
   api_id           = module.api_gateway.api_id
   authorizer_type  = "JWT"
   identity_sources = ["$request.header.Authorization"]
-  name             = local.name
+  name             = var.name
 
   jwt_configuration {
     audience = ["example"]
@@ -201,8 +200,7 @@ resource "aws_apigatewayv2_authorizer" "external" {
 }
 
 resource "aws_cognito_user_pool" "this" {
-  name = local.name
-
+  name = var.name
   tags = local.tags
 }
 
@@ -210,8 +208,8 @@ resource "aws_cognito_user_pool" "this" {
 #   source  = "terraform-aws-modules/step-functions/aws"
 #   version = "~> 4.0"
 
-#   name      = local.name
-#   role_name = "${local.name}-step-function"
+#   name      = var.name
+#   role_name = "${var.name}-step-function"
 #   trusted_entities = [
 #     "apigateway.amazonaws.com",
 #   ]
@@ -261,14 +259,14 @@ resource "null_resource" "download_package" {
 }
 
 module "lambda_function" {
-  source = "terraform-aws-modules/lambda/aws"
-  function_name = "hem-api-function"
-  architectures = ["arm64"]
-  timeout = 300
+  source         = "terraform-aws-modules/lambda/aws"
+  function_name  = "hem-api-function"
+  architectures  = ["arm64"]
+  timeout        = 300
   create_package = false
-  image_uri    = "317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemlambdafunction-d309c0d00ba6-python3.9-hem"
-  package_type = "Image"
-  publish = true
+  image_uri      = "317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemlambdafunction-d309c0d00ba6-python3.9-hem"
+  package_type   = "Image"
+  publish        = true
 
   cloudwatch_logs_retention_in_days = 7
 
@@ -291,7 +289,7 @@ module "lambda_function" {
 #   source  = "terraform-aws-modules/s3-bucket/aws"
 #   version = "~> 3.0"
 
-#   bucket_prefix = "${local.name}-"
+#   bucket_prefix = "${var.name}-"
 
 #   # NOTE: This is enabled for example usage only, you should not enable this for production workloads
 #   force_destroy = true

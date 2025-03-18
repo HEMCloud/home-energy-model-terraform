@@ -9,3 +9,14 @@ variable "openapi_spec_yaml_path" {
   type        = string
   default     = "./api.yaml"
 }
+
+variable "description" {
+  description = "Description of the API Gateway"
+  type        = string
+  default     = "HTTP API Gateway"
+}
+
+variable "name" {
+  description = "Name of the API Gateway"
+  type        = string
+}
