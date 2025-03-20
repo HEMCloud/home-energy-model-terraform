@@ -148,3 +148,13 @@ output "vpc_links" {
   description = "Map of VPC links created and their attributes"
   value       = module.api_gateway.vpc_links
 }
+
+output "lambda_function_arn" {
+  description = "The ARN of the underlying API Lambda function"
+  value       = module.lambda_function.lambda_function_arn
+}
+
+output "lambda_role_name" {
+  description = "The name of the IAM role associated with the underlying API Lambda function"
+  value       = module.lambda_function.lambda_role_name
+}
