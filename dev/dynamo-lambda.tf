@@ -14,7 +14,12 @@ resource "aws_lambda_event_source_mapping" "dynamo-stream-orchestrator" {
   event_source_arn  = module.dynamodb_table.dynamodb_table_stream_arn
   function_name     = module.dynamo-lambda.lambda_function_name
   starting_position = "LATEST"
-  depends_on        = [aws_iam_role_policy_attachment.attach_dynamo_stream_policy]
+  filter_criteria {
+    filter {
+      pattern = jsonencode({ "eventName" : ["INSERT"] })
+    }
+  }
+  depends_on = [aws_iam_role_policy_attachment.attach_dynamo_stream_policy]
 }
 
 data "aws_iam_policy_document" "allow_dynamo_stream_access" {
