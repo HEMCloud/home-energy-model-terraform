@@ -9,3 +9,9 @@ variable "build_artifacts_bucket_name" {
   type        = string
   default     = "hem-build-artifacts"
 }
+
+variable "env_short_string" {
+  description = "The short string representing the environment"
+  type        = string
+  default     = "dev"
+} 
