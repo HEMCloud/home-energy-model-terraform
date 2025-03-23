@@ -5,12 +5,12 @@
   "States": {
     "Set evaluation uuid variable": {
       "Type": "Pass",
-      "Next": "Set evaluationStatus to IN PROGRESS",
+      "Next": "Set evaluationStatus to IN PROGRESS, remove old hemLambdaErrorReason",
       "Assign": {
         "uuid": "{% $states.input.uuid %}"
       }
     },
-    "Set evaluationStatus to IN PROGRESS": {
+    "Set evaluationStatus to IN PROGRESS, remove old hemLambdaErrorReason": {
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Arguments": {
@@ -20,7 +20,7 @@
             "S": "{% $uuid %}"
           }
         },
-        "UpdateExpression": "SET evaluationStatus = :newStatus",
+        "UpdateExpression": "SET evaluationStatus = :newStatus REMOVE hemLambdaErrorReason",
         "ExpressionAttributeValues": {
           ":newStatus": {
             "S": "IN PROGRESS"
