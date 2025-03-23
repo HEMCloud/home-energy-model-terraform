@@ -66,11 +66,11 @@
         {
           "ErrorEquals": ["States.TaskFailed"],
           "Comment": "Handle failure",
-          "Next": "Set evaluationStatus to FAILED, set errorReason"
+          "Next": "Set evaluationStatus to FAILED, set hemLambdaErrorReason"
         }
       ]
     },
-    "Set evaluationStatus to FAILED, set errorReason": {
+    "Set evaluationStatus to FAILED, set hemLambdaErrorReason": {
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Arguments": {
@@ -80,17 +80,23 @@
             "S": "{% $uuid %}"
           }
         },
-        "UpdateExpression": "SET evaluationStatus = :newStatus, errorReason = :errorReason",
+        "UpdateExpression": "SET evaluationStatus = :newStatus, hemLambdaErrorReason = :hemLambdaErrorReason",
         "ExpressionAttributeValues": {
           ":newStatus": {
             "S": "FAILED"
           },
-          ":errorReason": {
+          ":hemLambdaErrorReason": {
             "M": "{% $states.input %}"
           }
         }
       },
-      "End": true
+      "Output": "{% $states.input %}",
+      "Next": "Re-raise error"
+    },
+    "Re-raise error": {
+      "Type": "Fail",
+      "Error": "{% $states.input.Error %}",
+      "Cause": "{% $states.input.Cause %}"
     },
     "Put output.json": {
       "Type": "Task",
