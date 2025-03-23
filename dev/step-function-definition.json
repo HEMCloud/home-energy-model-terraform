@@ -1,16 +1,35 @@
 {
   "Comment": "A Hello World example of the Amazon States Language using Pass states",
   "QueryLanguage": "JSONata",
-  "StartAt": "Pass",
+  "StartAt": "Set evaluation uuid variable",
   "States": {
-    "Pass": {
+    "Set evaluation uuid variable": {
       "Type": "Pass",
-      "Next": "GetObject",
+      "Next": "Set evaluationStatus to IN PROGRESS",
       "Assign": {
         "uuid": "{% $states.input.uuid %}"
       }
     },
-    "GetObject": {
+    "Set evaluationStatus to IN PROGRESS": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Arguments": {
+        "TableName": "hem-model-runs",
+        "Key": {
+          "uuid": {
+            "S": "{% $uuid %}"
+          }
+        },
+        "UpdateExpression": "SET evaluationStatus = :newStatus",
+        "ExpressionAttributeValues": {
+          ":newStatus": {
+            "S": "IN PROGRESS"
+          }
+        }
+      },
+      "Next": "Get input.json"
+    },
+    "Get input.json": {
       "Type": "Task",
       "Arguments": {
         "Bucket": "hem-dev-model-runs",
@@ -42,9 +61,9 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "Next": "PutObject"
+      "Next": "Put output.json"
     },
-    "PutObject": {
+    "Put output.json": {
       "Type": "Task",
       "Arguments": {
         "Body": "{% $states.input %}",
@@ -52,6 +71,25 @@
         "Key": "{% $uuid & '/output.json' %}"
       },
       "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
+      "Next": "Set evaluationStatus to COMPLETE"
+    },
+    "Set evaluationStatus to COMPLETE": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Arguments": {
+        "TableName": "hem-model-runs",
+        "Key": {
+          "uuid": {
+            "S": "{% $uuid %}"
+          }
+        },
+        "UpdateExpression": "SET evaluationStatus = :newStatus",
+        "ExpressionAttributeValues": {
+          ":newStatus": {
+            "S": "COMPLETE"
+          }
+        }
+      },
       "End": true
     }
   }
