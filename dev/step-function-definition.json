@@ -61,7 +61,36 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "Next": "Put output.json"
+      "Next": "Put output.json",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.TaskFailed"],
+          "Comment": "Handle failure",
+          "Next": "Set evaluationStatus to FAILED, set errorReason"
+        }
+      ]
+    },
+    "Set evaluationStatus to FAILED, set errorReason": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Arguments": {
+        "TableName": "hem-model-runs",
+        "Key": {
+          "uuid": {
+            "S": "{% $uuid %}"
+          }
+        },
+        "UpdateExpression": "SET evaluationStatus = :newStatus, errorReason = :errorReason",
+        "ExpressionAttributeValues": {
+          ":newStatus": {
+            "S": "FAILED"
+          },
+          ":errorReason": {
+            "M": "{% $states.input %}"
+          }
+        }
+      },
+      "End": true
     },
     "Put output.json": {
       "Type": "Task",
