@@ -16,7 +16,10 @@ module "step_function" {
     }
 
     lambda = {
-      lambda = [module.lambda_function_container_image.lambda_function_arn]
+      lambda = [
+        module.lambda_function_container_image.lambda_function_arn,
+        "${module.lambda_function_container_image.lambda_function_arn}:$LATEST"
+      ]
     }
   }
 
