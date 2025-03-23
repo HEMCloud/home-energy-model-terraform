@@ -1,21 +1,5 @@
 locals {
-  definition_template = <<EOF
-{
-  "Comment": "A Hello World example of the Amazon States Language using Pass states",
-  "QueryLanguage": "JSONata",
-  "StartAt": "Hello",
-  "States": {
-    "Hello": {
-      "Type": "Pass",
-      "Next": "World"
-    },
-    "World": {
-      "Type": "Pass",
-      "End": true
-    }
-  }
-}
-EOF
+  definition_template = file("${path.module}/step-function-definition.json")
 }
 
 module "step_function" {
@@ -36,8 +20,9 @@ module "step_function" {
     }
   }
 
-  attach_policies = true
-  policies        = [aws_iam_policy.allow_step_function_s3_access.arn]
+  attach_policies    = true
+  number_of_policies = 1
+  policies           = [aws_iam_policy.allow_step_function_s3_access.arn]
 }
 
 data "aws_iam_policy_document" "allow_step_function_s3_access" {

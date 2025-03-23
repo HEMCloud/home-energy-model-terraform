@@ -1,0 +1,52 @@
+{
+  "Comment": "A Hello World example of the Amazon States Language using Pass states",
+  "QueryLanguage": "JSONata",
+  "StartAt": "Pass",
+  "States": {
+    "Pass": {
+      "Type": "Pass",
+      "Next": "GetObject",
+      "Assign": {
+        "uuid": "{% $states.input.uuid %}"
+      }
+    },
+    "GetObject": {
+      "Type": "Task",
+      "Arguments": {
+        "Bucket": "hem-dev-model-runs",
+        "Key": "{% $uuid & '/input.json' %}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
+      "Next": "Invoke HEM Lambda",
+      "Output": "{% $states.result.Body %}"
+    },
+    "Invoke HEM Lambda": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Output": "{% $states.result.Payload %}",
+      "Arguments": {
+        "FunctionName": "arn:aws:lambda:eu-west-2:864981718509:function:hem-lambda-function:$LATEST",
+        "Payload": "{% $states.input %}"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "World"
+    },
+    "World": {
+      "Type": "Pass",
+      "End": true
+    }
+  }
+}
