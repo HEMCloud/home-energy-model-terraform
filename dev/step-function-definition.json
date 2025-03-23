@@ -42,10 +42,16 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "Next": "World"
+      "Next": "PutObject"
     },
-    "World": {
-      "Type": "Pass",
+    "PutObject": {
+      "Type": "Task",
+      "Arguments": {
+        "Body": "{% $states.input %}",
+        "Bucket": "hem-dev-model-runs",
+        "Key": "{% $uuid & '/output.json' %}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
       "End": true
     }
   }
