@@ -104,7 +104,7 @@ module "lambda_function" {
   architectures  = ["arm64"]
   timeout        = 300
   create_package = false
-  image_uri      = "317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemapifunction-1a83e3529688-python3.13-hem-api"
+  image_uri      = var.lambda_function_image_uri
   package_type   = "Image"
   publish        = true
 

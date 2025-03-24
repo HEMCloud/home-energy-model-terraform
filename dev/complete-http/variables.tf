@@ -34,3 +34,8 @@ variable "openapi_spec_object_key" {
   EOF
   type        = string
 }
+
+variable "lambda_function_image_uri" {
+  description = "URI of the Lambda function container image"
+  type        = string
+}
