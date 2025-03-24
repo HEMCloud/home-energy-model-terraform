@@ -1,25 +1,3 @@
-locals {
-  tags = {
-    Example    = var.name
-    GithubRepo = "terraform-aws-apigateway-v2"
-    GithubOrg  = "terraform-aws-modules"
-  }
-  default_get_integration = {
-    uri                    = module.lambda_function.lambda_function_arn
-    payload_format_version = "2.0"
-    http_method            = "GET"
-    connection_type        = "INTERNET"
-    type                   = "AWS_PROXY"
-  }
-}
-
-data "aws_s3_object" "openapi_spec" {
-  # If using yaml, must be uploaded as Content-Type plain/text for the body attribute to be available.
-  bucket = var.build_artifacts_bucket_name
-  key    = var.openapi_spec_object_key
-}
-
-
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
   depends_on = [ data.aws_s3_object.openapi_spec ]
