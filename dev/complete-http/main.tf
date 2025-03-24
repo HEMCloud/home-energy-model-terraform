@@ -1,6 +1,6 @@
 module "api_gateway" {
-  source = "terraform-aws-modules/apigateway-v2/aws"
-  depends_on = [ data.aws_s3_object.openapi_spec ]
+  source     = "terraform-aws-modules/apigateway-v2/aws"
+  depends_on = [data.aws_s3_object.openapi_spec]
 
   # If using yaml, must be uploaded as Content-Type plain/text for the body attribute to be available.
   body = templatestring(data.aws_s3_object.openapi_spec.body, {
@@ -94,6 +94,11 @@ module "lambda_function" {
       service    = "apigateway"
       source_arn = "${module.api_gateway.api_execution_arn}/*/*"
     }
+  }
+
+  environment_variables = {
+    HEM_S3_BUCKET_NAME      = var.hem_model_runs_bucket_name
+    HEM_DYNAMODB_TABLE_NAME = var.hem_model_runs_dynamo_table_name
   }
 
   tags = local.tags

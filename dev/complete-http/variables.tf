@@ -39,3 +39,23 @@ variable "lambda_function_image_uri" {
   description = "URI of the Lambda function container image"
   type        = string
 }
+
+variable "hem_model_runs_bucket_name" {
+  description = "Name of the S3 bucket where model run input and output json is stored"
+  type        = string
+}
+
+variable "hem_model_runs_bucket_arn" {
+  description = "ARN of the S3 bucket where model run input and output json is stored"
+  type        = string
+}
+
+variable "hem_model_runs_dynamo_table_name" {
+  description = "Name of the DynamoDB table where model run evaluation status is stored"
+  type        = string
+}
+
+variable "hem_model_runs_dynamo_table_arn" {
+  description = "ARN of the DynamoDB table where model run evaluation status is stored"
+  type        = string
+}
