@@ -2,6 +2,7 @@
 data "aws_iam_policy_document" "hem_model_runs_policy" {
   statement {
     actions = [
+      "s3:GetObject",
       "s3:PutObject",
       "s3:PutObjectAcl"
     ]
@@ -12,6 +13,7 @@ data "aws_iam_policy_document" "hem_model_runs_policy" {
 
   statement {
     actions = [
+      "dynamodb:GetItem",
       "dynamodb:PutItem"
     ]
     resources = [
