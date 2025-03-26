@@ -27,6 +27,11 @@ variable "api_lambda_image_uri" {
   type        = string
 }
 
+variable "hem_lambda_image_uri" {
+  description = "The URI of the Docker image for the Lambda function used for HEM model runs"
+  type        = string
+}
+
 variable "dynamo_stream_lambda_s3_object_key" {
   description = "The S3 object key of the Dynamo Stream Orchestrator Lambda zip in the build artifacts bucket"
   type        = string

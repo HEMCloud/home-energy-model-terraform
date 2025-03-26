@@ -4,7 +4,7 @@ module "lambda_function_container_image" {
   architectures  = ["arm64"]
   timeout        = 300
   create_package = false
-  image_uri      = "317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemlambdafunction-d309c0d00ba6-python3.9-hem"
+  image_uri      = var.hem_lambda_image_uri
   package_type   = "Image"
 }
 
