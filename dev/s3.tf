@@ -1,3 +1,4 @@
-resource "aws_s3_bucket" "hem_model_runs" {
-  bucket = "hem-${var.env_short_string}-model-runs"
+module "hem-model-run-s3" {
+  source           = "../hem_modules/hem-model-run-s3"
+  env_short_string = var.env_short_string
 }

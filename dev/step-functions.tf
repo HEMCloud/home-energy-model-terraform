@@ -44,8 +44,8 @@ data "aws_iam_policy_document" "allow_step_function_s3_access" {
     ]
 
     resources = [
-      aws_s3_bucket.hem_model_runs.arn,
-      "${aws_s3_bucket.hem_model_runs.arn}/*",
+      module.hem-model-run-s3.bucket_arn,
+      "${module.hem-model-run-s3.bucket_arn}/*",
     ]
   }
 }
