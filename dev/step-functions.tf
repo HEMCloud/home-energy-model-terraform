@@ -3,7 +3,9 @@ locals {
   definition_template = templatefile(
     "${path.module}/step-function-definition.json",
     {
-      latest_hem_model_lambda_arn = local.latest_hem_model_lambda_arn
+      latest_hem_model_lambda_arn     = local.latest_hem_model_lambda_arn
+      hem-model-run-dynamo-table-name = module.hem-model-run-dynamo.hem-model-run-dynamo-table-name
+      hem-model-run-bucket-name       = module.hem-model-run-s3.bucket_name
   })
 }
 

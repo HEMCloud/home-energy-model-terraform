@@ -1,5 +1,5 @@
 {
-  "Comment": "A Hello World example of the Amazon States Language using Pass states",
+  "Comment": "Step function workflow to ingest model run input, invoke Home Energy Model Lambda, and store output. It updates the evaluation status in the DynamoDB table.",
   "QueryLanguage": "JSONata",
   "StartAt": "Set evaluation uuid variable",
   "States": {
@@ -14,7 +14,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Arguments": {
-        "TableName": "hem-model-runs",
+        "TableName": "${hem-model-run-dynamo-table-name}",
         "Key": {
           "uuid": {
             "S": "{% $uuid %}"
@@ -32,7 +32,7 @@
     "Get input.json": {
       "Type": "Task",
       "Arguments": {
-        "Bucket": "hem-dev-model-runs",
+        "Bucket": "${hem-model-run-bucket-name}",
         "Key": "{% $uuid & '/input.json' %}"
       },
       "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
@@ -74,7 +74,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Arguments": {
-        "TableName": "hem-model-runs",
+        "TableName": "${hem-model-run-dynamo-table-name}",
         "Key": {
           "uuid": {
             "S": "{% $uuid %}"
@@ -102,7 +102,7 @@
       "Type": "Task",
       "Arguments": {
         "Body": "{% $states.input %}",
-        "Bucket": "hem-dev-model-runs",
+        "Bucket": "${hem-model-run-bucket-name}",
         "Key": "{% $uuid & '/output.json' %}"
       },
       "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
@@ -112,7 +112,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Arguments": {
-        "TableName": "hem-model-runs",
+        "TableName": "${hem-model-run-dynamo-table-name}",
         "Key": {
           "uuid": {
             "S": "{% $uuid %}"
