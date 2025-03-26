@@ -1,0 +1,47 @@
+name: HCP Terraform Apply Run
+
+on:
+    workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+
+# This limits concurrent runs to 1, to prevent conflicts when applying
+concurrency: terraform-apply
+
+env:
+  TF_CLOUD_ORGANIZATION: "<<INPUT REQUIRED>>" ## Name of your existing HCP Terraform Organization. RECOMMENDED: use repository variables. ex. "${{ vars.TF_CLOUD_ORGANIZATION }}"
+  TF_API_TOKEN: "<<INPUT REQUIRED>>" ## HCP Terraform API Token. RECOMMENDED: replace with github action secrets. ex. "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "<<INPUT REQUIRED>>" ## Name of your existing workspace in HCP Terraform.
+  CONFIG_DIRECTORY: "<<INPUT REQUIRED>>" ## Directory of your Terraform Configuration. Relative to the project root.
+  TF_LOG: DEBUG ## Helpful for troubleshooting
+  TF_MAX_TIMEOUT: "10m"
+
+jobs:
+  terraform-cloud-apply-run:
+    runs-on: ubuntu-latest
+    ## OPTIONAL: can scope variables to this specific job
+    ## Example:
+    # env:
+    #  TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORG }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.2
+        id: upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ${{ env.CONFIG_DIRECTORY }}
+
+      - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
+        id: create-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
+
+      - uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.2
+        id: apply
+        if: ${{ fromJSON(steps.create-run.outputs.payload).data.attributes.actions.IsConfirmable }}
+        with:
+          run: ${{ steps.create-run.outputs.run_id }}
+          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
