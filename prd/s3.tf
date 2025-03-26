@@ -1,6 +1,4 @@
-resource "aws_s3_bucket" "my_bucket" {
-  bucket = "unique-hem-tf-test-bucket-prd"
-  tags = {
-    Name = "My bucket"
-  }
+module "hem-model-run-s3" {
+  source           = "../hem_modules/hem-model-run-s3"
+  env_short_string = var.env_short_string
 }
