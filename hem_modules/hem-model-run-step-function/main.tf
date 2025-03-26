@@ -1,7 +1,7 @@
 locals {
   latest_hem_model_lambda_arn = "${var.hem_model_lambda_arn}:$LATEST"
   definition_template = templatefile(
-    "${path.module}/step-function-definition.json",
+    "${path.module}/step-function-definition.asl.json",
     {
       latest_hem_model_lambda_arn     = local.latest_hem_model_lambda_arn
       hem-model-run-dynamo-table-name = var.hem_model_run_dynamo_table_name
