@@ -44,7 +44,7 @@
       "Resource": "arn:aws:states:::lambda:invoke",
       "Output": "{% $states.result.Payload %}",
       "Arguments": {
-        "FunctionName": "arn:aws:lambda:eu-west-2:864981718509:function:hem-model-lambda-function:$LATEST",
+        "FunctionName": "${latest_hem_model_lambda_arn}",
         "Payload": "{% $states.input %}"
       },
       "Retry": [

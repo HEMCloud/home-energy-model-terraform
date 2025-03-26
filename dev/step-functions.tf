@@ -1,5 +1,10 @@
 locals {
-  definition_template = file("${path.module}/step-function-definition.json")
+  latest_hem_model_lambda_arn = "${module.hem-model-lambda.lambda_function_arn}:$LATEST"
+  definition_template = templatefile(
+    "${path.module}/step-function-definition.json",
+    {
+      latest_hem_model_lambda_arn = local.latest_hem_model_lambda_arn
+  })
 }
 
 module "step_function" {
@@ -18,7 +23,7 @@ module "step_function" {
     lambda = {
       lambda = [
         module.hem-model-lambda.lambda_function_arn,
-        "${module.hem-model-lambda.lambda_function_arn}:$LATEST"
+        local.latest_hem_model_lambda_arn
       ]
     }
   }
