@@ -1,3 +1,6 @@
+# Default vars
+# ------------------------------
+
 variable "dev_account_id" {
   description = "The development AWS account ID"
   type        = string
@@ -15,6 +18,9 @@ variable "env_short_string" {
   type        = string
   default     = "dev"
 }
+
+# Non-default vars, must be set
+# ------------------------------
 
 variable "api_lambda_image_uri" {
   description = "The URI of the Docker image for the Lambda function used for API Gateway Integrations"
