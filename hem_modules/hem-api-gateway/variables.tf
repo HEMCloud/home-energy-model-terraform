@@ -1,3 +1,6 @@
+# Default vars
+# ------------------------------
+
 variable "domain_name" {
   description = "Custom domain name to use on API Gateway endpoint"
   type        = string
@@ -13,13 +16,17 @@ variable "openapi_spec_yaml_path" {
 variable "description" {
   description = "Description of the API Gateway"
   type        = string
-  default     = "HTTP API Gateway"
+  default     = "Main HTTP API Gateway for HEM Cloud"
 }
 
 variable "name" {
   description = "Name of the API Gateway"
   type        = string
+  default     = "hem-cloud-api-gateway"
 }
+
+# Non-default vars
+# ------------------------------
 
 variable "build_artifacts_bucket_name" {
   description = "Name of the S3 bucket where build artifacts are stored"

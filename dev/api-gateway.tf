@@ -1,7 +1,5 @@
 module "hem-http-api-gateway" {
   source                           = "../hem_modules/hem-api-gateway"
-  description                      = "Main HTTP API Gateway for HEM Cloud"
-  name                             = "hem-cloud-api-gateway"
   build_artifacts_bucket_name      = var.build_artifacts_bucket_name
   openapi_spec_object_key          = "openapi.json"
   api_lambda_image_uri             = var.api_lambda_image_uri
