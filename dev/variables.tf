@@ -14,4 +14,9 @@ variable "env_short_string" {
   description = "The short string representing the environment"
   type        = string
   default     = "dev"
-} 
+}
+
+variable "api_lambda_image_uri" {
+  description = "The URI of the Docker image for the Lambda function used for API Gateway Integrations"
+  type        = string
+}

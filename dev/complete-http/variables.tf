@@ -35,7 +35,7 @@ variable "openapi_spec_object_key" {
   type        = string
 }
 
-variable "lambda_function_image_uri" {
+variable "api_lambda_image_uri" {
   description = "URI of the Lambda function container image"
   type        = string
 }

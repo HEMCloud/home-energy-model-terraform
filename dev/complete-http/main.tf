@@ -81,7 +81,7 @@ module "lambda_function" {
   architectures  = ["arm64"]
   timeout        = 300
   create_package = false
-  image_uri      = var.lambda_function_image_uri
+  image_uri      = var.api_lambda_image_uri
   package_type   = "Image"
   publish        = true
 
