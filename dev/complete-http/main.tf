@@ -73,7 +73,6 @@ module "api_gateway" {
     throttling_rate_limit    = 100
   }
 
-  tags = local.tags
 }
 
 module "lambda_function" {
@@ -100,6 +99,4 @@ module "lambda_function" {
     HEM_S3_BUCKET_NAME      = var.hem_model_runs_bucket_name
     HEM_DYNAMODB_TABLE_NAME = var.hem_model_runs_dynamo_table_name
   }
-
-  tags = local.tags
 }

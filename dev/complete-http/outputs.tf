@@ -149,6 +149,10 @@ output "vpc_links" {
   value       = module.api_gateway.vpc_links
 }
 
+################################################################################
+# API Lambda Integration
+################################################################################
+
 output "lambda_function_arn" {
   description = "The ARN of the underlying API Lambda function"
   value       = module.lambda_function.lambda_function_arn
