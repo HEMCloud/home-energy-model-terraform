@@ -7,6 +7,7 @@ data "aws_iam_policy_document" "hem_model_runs_policy" {
       "s3:ListBucket"
     ]
     resources = [
+      var.hem_model_runs_bucket_arn,
       "${var.hem_model_runs_bucket_arn}/*"
     ]
   }
