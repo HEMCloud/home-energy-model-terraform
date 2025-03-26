@@ -5,6 +5,6 @@ module "hem-http-api-gateway" {
   api_lambda_image_uri             = var.api_lambda_image_uri
   hem_model_runs_bucket_name       = aws_s3_bucket.hem_model_runs.id
   hem_model_runs_bucket_arn        = aws_s3_bucket.hem_model_runs.arn
-  hem_model_runs_dynamo_table_arn  = module.dynamodb_table.dynamodb_table_arn
-  hem_model_runs_dynamo_table_name = module.dynamodb_table.dynamodb_table_id
+  hem_model_runs_dynamo_table_arn  = module.hem-model-run-dynamo.hem-model-run-dynamo-table-arn
+  hem_model_runs_dynamo_table_name = module.hem-model-run-dynamo.hem-model-run-dynamo-table-name
 }

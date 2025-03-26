@@ -12,7 +12,7 @@ module "step_function" {
 
   service_integrations = {
     dynamodb = {
-      dynamodb = [module.dynamodb_table.dynamodb_table_arn]
+      dynamodb = [module.hem-model-run-dynamo.hem-model-run-dynamo-table-arn]
     }
 
     lambda = {

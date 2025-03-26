@@ -14,7 +14,7 @@ module "dynamo-lambda" {
 }
 
 resource "aws_lambda_event_source_mapping" "dynamo-stream-orchestrator" {
-  event_source_arn  = module.dynamodb_table.dynamodb_table_stream_arn
+  event_source_arn  = module.hem-model-run-dynamo.hem-model-run-dynamo-stream-arn
   function_name     = module.dynamo-lambda.lambda_function_name
   starting_position = "LATEST"
   filter_criteria {
@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "allow_dynamo_stream_access" {
       "dynamodb:ListStreams",
     ]
     resources = [
-      module.dynamodb_table.dynamodb_table_stream_arn,
+      module.hem-model-run-dynamo.hem-model-run-dynamo-stream-arn,
     ]
   }
 }
