@@ -1,5 +1,5 @@
 module "hem-http-api-gateway" {
-  source                           = "./hem-api-gateway"
+  source                           = "../hem_modules/hem-api-gateway"
   description                      = "Main HTTP API Gateway for HEM Cloud"
   name                             = "hem-cloud-api-gateway"
   build_artifacts_bucket_name      = var.build_artifacts_bucket_name
