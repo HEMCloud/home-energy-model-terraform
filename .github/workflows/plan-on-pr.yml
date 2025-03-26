@@ -11,7 +11,7 @@ on:
 ## Add shared Environment Variables across jobs here ##
 env:
   TF_CLOUD_ORGANIZATION: "${{vars.TF_CLOUD_ORGANIZATION}}" ## Name of your existing HCP Terraform Organization. RECOMMENDED: use repository variables. ex. "${{ vars.TF_CLOUD_ORGANIZATION }}"
-  TF_API_TOKEN: "<<INPUT REQUIRED>>" ## HCP Terraform API Token. RECOMMENDED: replace with github action secrets. ex. "${{ secrets.TF_API_TOKEN }}"
+  TF_API_TOKEN: "${{vars.TF_API_TOKEN}}" ## HCP Terraform API Token. RECOMMENDED: replace with github action secrets. ex. "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{vars.TF_WORKSPACE}}" ## Name of your existing workspace in HCP Terraform.
   CONFIG_DIRECTORY: "${{vars.TF_WORKSPACE}}" ## Directory of your Terraform Configuration. Relative to the project root.
   TF_LOG: DEBUG ## Helpful for troubleshooting
