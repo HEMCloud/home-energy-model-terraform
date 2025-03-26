@@ -4,7 +4,7 @@ data "aws_iam_policy_document" "hem_model_runs_policy" {
     actions = [
       "s3:GetObject",
       "s3:PutObject",
-      "s3:PutObjectAcl"
+      "s3:ListBucket"
     ]
     resources = [
       "${var.hem_model_runs_bucket_arn}/*"
