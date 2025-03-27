@@ -9,3 +9,4 @@ on:
 jobs:
   call-terraform-plan:
     uses: ./.github/workflows/run-tf-plan-all-envs.yml
+    secrets: inherit

@@ -10,3 +10,4 @@ jobs:
     uses: ./.github/workflows/run-tf-apply-chosen-env.yml
     with:
       environment: prd
+    secrets: inherit
