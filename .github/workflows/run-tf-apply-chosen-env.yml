@@ -1,18 +1,21 @@
-name: HCP Terraform Apply Run
+name: HCP Terraform Apply Run To Chosen Environment
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to apply the Terraform configuration to'
+        description: "Environment to apply the Terraform configuration to"
         required: true
         type: choice
         options:
           - dev
           - prd
-  # push:
-  #   branches:
-  #     - main
+  workflow_call:
+    inputs:
+      environment:
+        description: "Environment to apply the Terraform configuration to"
+        required: true
+        type: string
 
 # This limits concurrent runs to 1, to prevent conflicts when applying
 concurrency: terraform-apply

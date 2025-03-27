@@ -1,0 +1,12 @@
+name: On Merge to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-terraform-apply:
+    uses: ./.github/workflows/run-tf-apply-chosen-env.yml
+    with:
+      environment: prd
