@@ -1,12 +1,12 @@
 name: HCP Terraform Speculative Run
 
 on:
-  push:
+  # push:
+  #   branches:
+  #     - main
+  pull_request:
     branches:
       - main
-#   pull_request:
-#     branches:
-#       - main
 
 ## Add shared Environment Variables across jobs here ##
 env:
