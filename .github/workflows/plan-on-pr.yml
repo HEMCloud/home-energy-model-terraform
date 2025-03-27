@@ -1,4 +1,4 @@
-name: HCP Terraform Speculative Run
+name: HCP Terraform Speculative Run For All Environments
 
 on:
   workflow_dispatch:
