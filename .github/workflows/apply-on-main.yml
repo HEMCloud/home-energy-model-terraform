@@ -10,11 +10,11 @@ on:
 concurrency: terraform-apply
 
 env:
-  TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}" ## Name of your existing HCP Terraform Organization
-  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}" ## HCP Terraform API Token
-  TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}" ## Name of your existing workspace in HCP Terraform
-  CONFIG_DIRECTORY: "./" ## Directory of your Terraform Configuration. Relative to the project root.
-  TF_LOG: DEBUG ## Helpful for troubleshooting
+  TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
+  CONFIG_DIRECTORY: "./"
+  TF_LOG: DEBUG
   TF_MAX_TIMEOUT: "10m"
   TF_VAR_api_lambda_image_uri: '"317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemapifunction-f85a3d4fb428-python3.13-hem-api"'
   TF_VAR_hem_lambda_image_uri: '"317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemlambdafunction-d309c0d00ba6-python3.9-hem"'
@@ -23,10 +23,6 @@ env:
 jobs:
   terraform-cloud-apply-run:
     runs-on: ubuntu-latest
-    ## OPTIONAL: can scope variables to this specific job
-    ## Example:
-    # env:
-    #  TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORG }}
     steps:
       - uses: actions/checkout@v3
 

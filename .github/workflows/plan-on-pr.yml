@@ -1,32 +1,25 @@
 name: HCP Terraform Speculative Run
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  workflow_dispatch:
   pull_request:
     branches:
       - main
 
-## Add shared Environment Variables across jobs here ##
 env:
-  TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}" ## Name of your existing HCP Terraform Organization
-  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}" ## HCP Terraform API Token
-  TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}" ## Name of your existing workspace in HCP Terraform
-  CONFIG_DIRECTORY: "./" ## Directory of your Terraform Configuration
-  TF_LOG: DEBUG ## Helpful for troubleshooting
-  TF_MAX_TIMEOUT: "10m" ## If you wish to override the default "1h"
-  TF_VAR_api_lambda_image_uri: "\"317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemapifunction-f85a3d4fb428-python3.13-hem-api\""
-  TF_VAR_hem_lambda_image_uri: "\"317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemlambdafunction-d309c0d00ba6-python3.9-hem\""
-  TF_VAR_dynamo_stream_lambda_s3_object_key: "\"dynamo-stream-orchestrator-lambda-zips/86e33ea776d0c635d9cfd6560d463d21\""
+  TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
+  CONFIG_DIRECTORY: "./"
+  TF_LOG: DEBUG
+  TF_MAX_TIMEOUT: "10m"
+  TF_VAR_api_lambda_image_uri: '"317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemapifunction-f85a3d4fb428-python3.13-hem-api"'
+  TF_VAR_hem_lambda_image_uri: '"317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemlambdafunction-d309c0d00ba6-python3.9-hem"'
+  TF_VAR_dynamo_stream_lambda_s3_object_key: '"dynamo-stream-orchestrator-lambda-zips/86e33ea776d0c635d9cfd6560d463d21"'
 
 jobs:
   terraform-cloud-speculative-run:
     runs-on: ubuntu-latest
-    ## OPTIONAL: can scope variables to this specific job
-    ## Example:
-    # env:
-    #  TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORG }}
     steps:
       - uses: actions/checkout@v3
 
@@ -39,25 +32,17 @@ jobs:
 
       - uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
         id: run
-        ## run may fail, if so continue to output PR comment
-        ## step.terraform-cloud-check-run-status will fail job after pr comment is created/updated.
         continue-on-error: true
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
           plan_only: true
-          ## OPTIONAL: set your own message for run. A default message will be defined for you.
-          ## Example:
-          # message: "Triggered From GitHub Actions CI ${{ github.sha }}"
 
       - uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.3.2
         id: plan-output
         with:
           plan: ${{ steps.run.outputs.plan_id }}
 
-      ## REQUIRED: Workflow permissions: `Read and write permissions`
-      ## GITHUB_TOKEN is the built in token provided by GitHub Actions. It will need to be set to "permissive" in your repository settings
-      ## More information can be found here: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#setting-the-permissions-of-the-github_token-for-your-repository
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         with:
