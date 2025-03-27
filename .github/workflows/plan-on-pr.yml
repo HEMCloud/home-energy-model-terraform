@@ -16,15 +16,11 @@ env:
   CONFIG_DIRECTORY: "./" ## Directory of your Terraform Configuration. Relative to the project root.
   TF_LOG: DEBUG ## Helpful for troubleshooting
   TF_MAX_TIMEOUT: "10m" ## If you wish to override the default "1h"
+  TF_VAR_api_lambda_image_uri: "317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemapifunction-f85a3d4fb428-python3.13-hem-api"
+  TF_VAR_hem_lambda_image_uri: "317467111462.dkr.ecr.eu-west-2.amazonaws.com/hem-lambda-image-repository:hemlambdafunction-d309c0d00ba6-python3.9-hem"
+  TF_VAR_dynamo_stream_lambda_s3_object_key: "dynamo-stream-orchestrator-lambda-zips/86e33ea776d0c635d9cfd6560d463d21"
 
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: pwd
-      - run: ls -la
-      - run: ls -la ${{ env.CONFIG_DIRECTORY }}
   terraform-cloud-speculative-run:
     runs-on: ubuntu-latest
     ## OPTIONAL: can scope variables to this specific job
