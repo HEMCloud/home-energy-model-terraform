@@ -9,7 +9,6 @@ on:
 env:
   TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
   CONFIG_DIRECTORY: "./"
   TF_LOG: DEBUG
   TF_MAX_TIMEOUT: "10m"
@@ -20,13 +19,16 @@ env:
 jobs:
   terraform-cloud-speculative-run:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, prd]
     steps:
       - uses: actions/checkout@v3
 
       - uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.2
         id: upload
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: ${{ matrix.environment }}
           directory: ${{ env.CONFIG_DIRECTORY }}
           speculative: true
 
@@ -34,7 +36,7 @@ jobs:
         id: run
         continue-on-error: true
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: ${{ matrix.environment }}
           configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
           plan_only: true
 
