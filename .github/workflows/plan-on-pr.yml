@@ -22,14 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-  pwd:
-    runs-on: ubuntu-latest
-    steps:
       - run: pwd
-  ls_a:
-    runs-on: ubuntu-latest
-    steps:
-      - run: ls -a
+      - run: ls -la
+      - run: ls -la ${{ env.CONFIG_DIRECTORY }}
   terraform-cloud-speculative-run:
     runs-on: ubuntu-latest
     ## OPTIONAL: can scope variables to this specific job
