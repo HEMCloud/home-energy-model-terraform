@@ -1,37 +1,28 @@
-resource "aws_ecr_repository" "hem_lambda_image_repository" {
-  name                 = "hem-lambda-image-repository"
+module "hem_lambda_image_repository_commits" {
+  source               = "../hem_modules/hem-ecr-repository"
+  repository_name      = "hem-lambda-image-repository-commits"
   image_tag_mutability = "IMMUTABLE"
+  account_ids          = local.all_account_ids
+  region               = var.region
 }
-
-resource "aws_ecr_repository_policy" "hem_lambda_image_repository_policy" {
-  repository = aws_ecr_repository.hem_lambda_image_repository.name
-  policy     = data.aws_iam_policy_document.hem_lambda_image_repository_policy.json
+module "hem_lambda_image_repository_tags" {
+  source               = "../hem_modules/hem-ecr-repository"
+  repository_name      = "hem-lambda-image-repository-tags"
+  image_tag_mutability = "IMMUTABLE"
+  account_ids          = local.all_account_ids
+  region               = var.region
 }
-
-data "aws_iam_policy_document" "hem_lambda_image_repository_policy" {
-  statement {
-    sid     = "CrossAccountPermission"
-    effect  = "Allow"
-    actions = ["ecr:BatchGetImage", "ecr:GetDownloadUrlForLayer"]
-    principals {
-      type        = "AWS"
-      identifiers = [for account_id in local.all_account_ids : "arn:aws:iam::${account_id}:root"]
-    }
-  }
-
-  statement {
-    sid     = "LambdaECRImageCrossAccountRetrievalPolicy"
-    effect  = "Allow"
-    actions = ["ecr:BatchGetImage", "ecr:GetDownloadUrlForLayer"]
-
-    condition {
-      test     = "StringLike"
-      variable = "aws:sourceARN"
-      values   = [for account_id in local.all_account_ids : "arn:aws:lambda:${var.region}:${account_id}:function:*"]
-    }
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
+module "api_lambda_image_repository_commits" {
+  source               = "../hem_modules/hem-ecr-repository"
+  repository_name      = "api-lambda-image-repository-commits"
+  image_tag_mutability = "IMMUTABLE"
+  account_ids          = local.all_account_ids
+  region               = var.region
+}
+module "api_lambda_image_repository_tags" {
+  source               = "../hem_modules/hem-ecr-repository"
+  repository_name      = "api-lambda-image-repository-tags"
+  image_tag_mutability = "IMMUTABLE"
+  account_ids          = local.all_account_ids
+  region               = var.region
 }

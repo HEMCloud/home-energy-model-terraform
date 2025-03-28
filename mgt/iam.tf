@@ -21,11 +21,6 @@ data "aws_iam_policy_document" "github_action_permissions" {
       "ecr:UploadLayerPart",
       "ecr:GetDownloadUrlForLayer",
       "ecr:BatchGetImage",
-    ]
-    resources = [aws_ecr_repository.hem_lambda_image_repository.arn]
-  }
-  statement {
-    actions = [
       "sts:GetCallerIdentity",
       "ecr:GetAuthorizationToken" # * is required for GitHub Actions to authenticate to ECR
     ]
